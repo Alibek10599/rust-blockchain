@@ -4,6 +4,7 @@ use bincode::{deserialize, serialize};
 use num_bigint::{BigInt, Sign};
 use num_traits::Zero;
 use serde::{Deserialize, Serialize};
+use sled::IVec;
 
 pub struct Block {
     timestamp: i64,
@@ -13,6 +14,14 @@ pub struct Block {
     nonce: i64,
     height: usize,
 }
+
+impl From<Block> for IVec {
+    fn from(b: Block) -> Self {
+        let bytes = bincode::serialize(&b).unwrap();
+        Self::from(bytes)
+    }
+}
+
 impl Block {
     pub fn deserialize(bytes: &[u8]) -> Block {
         bincode::deserialize(bytes).unwrap()
